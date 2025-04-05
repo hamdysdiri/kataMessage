@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  ibm-mq:
+    image: ibmcom/mq:latest
+    container_name: my-mq
+    privileged: true
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+    volumes:
+      - mqdata:/mnt/mqm
+      - ./config.mqsc:/etc/mqm/config.mqsc
+    command: >
+      bash -c "
+      if [ ! -d /mnt/mqm/qmgrs/QM1 ]; then
+        echo 'Creating QM1...';
+        /opt/mqm/bin/crtmqm QM1;
+        strmqm QM1;
+        runmqsc QM1 < /etc/mqm/config.mqsc;
+        endmqm QM1;
+      fi;
+      strmqm -x QM1 && tail -f /dev/null
+      "
+
+volumes:
+  mqdata:
