@@ -1,7 +1,10 @@
 package com.messaging.bank.config;
 
+import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 
 import javax.jms.JMSException;
@@ -14,13 +17,25 @@ import javax.jms.Session;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 
+@Component
 public class MessageReceiver {
     private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
     private final QueueConnectionFactory factory;
+    private final MessageStorageService messageStorageService;
 
-    public MessageReceiver(QueueConnectionFactory factory) {
+    @Value("${ibm.mq.user}")
+    private String username;
+    @Value("${ibm.mq.password}")
+    private String password;
+
+    @Value("${ibm.mq.queue}")
+    private String mqQueue;
+
+    public MessageReceiver(QueueConnectionFactory factory, MessageStorageService messageStorageService) {
         this.factory = factory;
+        this.messageStorageService = messageStorageService;
+
     }
 
     public String receiveMessage() {
@@ -30,11 +45,12 @@ public class MessageReceiver {
         QueueReceiver receiver = null;
 
         try {
-            connection = factory.createQueueConnection("app", "passw0rd");
+            System.out.println("receiver = " + receiver);
+            connection = factory.createQueueConnection(username, password);
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
             // Suppose your queue is "QUEUE1"
-            Queue queue = session.createQueue("QUEUE1");
+            Queue queue = session.createQueue(mqQueue);
             receiver = session.createReceiver(queue);
             connection.start();
 
@@ -44,14 +60,11 @@ public class MessageReceiver {
                 TextMessage textMessage = (TextMessage) message;
                 long timestamp = message.getJMSTimestamp();
                 String messageId = message.getJMSMessageID();
-                int priority = message.getJMSPriority();
-                long expiration = message.getJMSExpiration();
+                logger.info("Message received: {} ", textMessage.getText());
+                logger.info("Message ID: {} ", messageId);
+                logger.info("Message timestamp: {} ", timestamp);
 
-                logger.info("Message received: " + textMessage.getText());
-                logger.info("Message ID: " + messageId);
-                logger.info("Message timestamp: " + timestamp);
-                logger.info("Message Priority: " + priority);
-                logger.info("Expiration Time: " + expiration);
+                messageStorageService.saveMessage(textMessage.getText(), textMessage.getJMSMessageID());
 
                 return textMessage.getText();
             } else {

@@ -1,4 +1,4 @@
-package com.messaging.bank;
+package com.messaging.bank.controller;
 
 import com.messaging.bank.service.MessageService;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +16,15 @@ public class MessageController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(@RequestBody String messageText) {
-        messageService.sendMessage(messageText);
+        messageService.sendAndSaveMessage(messageText);
         return ResponseEntity.ok("Message sent successfully");
     }
 
     @GetMapping("/receive")
     public ResponseEntity<String> receiveMessage() {
-        String msg = messageService.receiveMessage();
+        String msg = messageService.receiveAndSaveMessage();
         if (msg != null) {
-            return ResponseEntity.ok("Received message: " + msg);
+            return ResponseEntity.ok("Received message : " + msg);
         } else {
             return ResponseEntity.ok("No message available.");
         }

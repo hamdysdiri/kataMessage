@@ -1,24 +1,32 @@
 package com.messaging.bank.config;
 
+import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.jms.*;
 
 
+@Component
 public class MessageSender {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
-    @Value("${ibm.mq.username}")
+    @Value("${ibm.mq.user}")
     private String username;
     @Value("${ibm.mq.password}")
     private String password;
-    private final QueueConnectionFactory factory;
+    @Value("${ibm.mq.queue}")
+    private String mqQueue;
 
-    public MessageSender(QueueConnectionFactory factory) {
+    private final QueueConnectionFactory factory;
+    private final MessageStorageService messageStorageService;
+
+    public MessageSender(QueueConnectionFactory factory, MessageStorageService messageStorageService) {
         this.factory = factory;
+        this.messageStorageService = messageStorageService;
     }
 
     public void sendMessage(String messageText) {
@@ -31,8 +39,7 @@ public class MessageSender {
             connection = factory.createQueueConnection(username,password);
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // Suppose your queue is "QUEUE1"
-            Queue queue = session.createQueue("QUEUE1");
+            Queue queue = session.createQueue(mqQueue);
             sender = session.createSender(queue);
             connection.start();
 
@@ -40,7 +47,9 @@ public class MessageSender {
             message.setText(messageText);
             sender.send(message);
 
-            logger.info("Message sent: " + messageText);
+            saveMessageOnDB(message);
+
+            logger.info("Message sent: {}" , messageText);
         } catch (JMSException e) {
             e.printStackTrace();
         } finally {
@@ -52,5 +61,11 @@ public class MessageSender {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void saveMessageOnDB(TextMessage message) throws JMSException {
+        TextMessage textMessage = message;
+        String content = textMessage.getText();
+        messageStorageService.saveMessage(content,textMessage.getJMSMessageID());
     }
 }

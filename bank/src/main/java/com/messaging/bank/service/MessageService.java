@@ -4,26 +4,23 @@ import com.messaging.bank.config.MessageReceiver;
 import com.messaging.bank.config.MessageSender;
 import org.springframework.stereotype.Service;
 
-import javax.jms.QueueConnectionFactory;
-
 
 @Service
 public class MessageService {
-    private final QueueConnectionFactory queueConnectionFactory;
+    private final MessageSender messageSender;
+    private final MessageReceiver messageReceiver;
 
-    public MessageService(QueueConnectionFactory queueConnectionFactory) {
-        this.queueConnectionFactory = queueConnectionFactory;
+    public MessageService(MessageSender messageSender, MessageReceiver messageReceiver) {
+        this.messageSender = messageSender;
+        this.messageReceiver = messageReceiver;
     }
 
-    public void sendMessage(String messageText) {
-        // Create a sender with the injected factory
-        MessageSender sender = new MessageSender(queueConnectionFactory);
-        sender.sendMessage(messageText);
+    public void sendAndSaveMessage(String messageText) {
+        messageSender.sendMessage(messageText);
     }
 
-    public String receiveMessage() {
-        // Create a receiver with the injected factory
-        MessageReceiver receiver = new MessageReceiver(queueConnectionFactory);
-        return receiver.receiveMessage();
+    public String receiveAndSaveMessage() {
+        return messageReceiver.receiveMessage();
     }
+
 }
