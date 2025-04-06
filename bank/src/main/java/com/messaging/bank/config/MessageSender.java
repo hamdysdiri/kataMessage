@@ -3,12 +3,16 @@ package com.messaging.bank.config;
 import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-
 import javax.jms.*;
 
-
+/**
+ * this class is used at the begining of the project before focusing on improving the performance
+ * This solution is only for small project, and not support multiple call (not like JMS Listner)
+ */
 @Component
 public class MessageSender {
 
@@ -21,6 +25,9 @@ public class MessageSender {
     @Value("${ibm.mq.queue}")
     private String mqQueue;
 
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
     private final QueueConnectionFactory factory;
     private final MessageStorageService messageStorageService;
 
@@ -29,9 +36,10 @@ public class MessageSender {
         this.messageStorageService = messageStorageService;
     }
 
+
     /**
      *
-     * @param messageText to be send it throught the mq ibm middleware
+     * @param messageText to be send it throught the mq ibm server
      */
     public void sendMessage(String messageText) {
 

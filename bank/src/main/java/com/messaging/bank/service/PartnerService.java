@@ -19,11 +19,11 @@ import java.util.List;
 public class PartnerService {
 
     private final PartnerRepository partnerRepository;
-    private final EntityMapper mapper;
+    private EntityMapper mapper;
 
-    public PartnerService(PartnerRepository partnerRepository, EntityMapper mapper) {
+    public PartnerService(PartnerRepository partnerRepository) {
         this.partnerRepository = partnerRepository;
-        this.mapper = mapper;
+
     }
 
     @Transactional(readOnly = true)

@@ -18,7 +18,7 @@ public class MessageMQService {
     }
 
     public void sendAndSaveMessage(final String messageText) {
-        messageSender.sendMessage(messageText);
+        messageSender.send(messageText);
     }
 
     public String receiveAndSaveMessage() {
