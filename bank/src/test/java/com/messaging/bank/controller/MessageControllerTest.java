@@ -52,7 +52,7 @@ public class MessageControllerTest {
     @Test
     @DisplayName("shouldReturn all ReceivedMessage successfully from the db")
     void shouldReturnAllReceivedMessageFromDB() throws Exception {
-        MessageEntity entity = new MessageEntity("JMS123","Hello MQ", LocalDateTime.now(), true);
+        MessageEntity entity = new MessageEntity("JMS123","Hello MQIBM", LocalDateTime.now(), true);
         Mockito.when(messageStorageService.getAllMessagesStorage())
                 .thenReturn(List.of(entity));
 

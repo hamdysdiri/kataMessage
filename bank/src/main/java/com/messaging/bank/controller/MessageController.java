@@ -28,7 +28,7 @@ public class MessageController{
     }
 
     @GetMapping(RestConstants.RECEIVE)
-    public ResponseEntity<String> receiveLatestMessageFromMiddelware() {
+    public ResponseEntity<String> receiveLatestMessageFromMiddelware()  {
         String msg = messageService.receiveAndSaveMessage();
         if (msg != null) {
             return ResponseEntity.ok("Received message : " + msg);

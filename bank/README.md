@@ -51,7 +51,9 @@ To Test, please run:
 
 3- curl http://localhost:8080/api/messages/receive
 
-Resources:
+To realize this kata, I got throught this resources:
 1- https://github.com/ibm-messaging/mq-jms-spring
 
 2- https://www.baeldung.com/java-message-service-ibm-mq-read-write
+
+3- https://github.com/ibm-messaging/mq-dev-patterns/blob/master/Spring-JMS/src/main/java/com/ibm/mq/samples/jms/spring/level102/MessageConsumer102.java

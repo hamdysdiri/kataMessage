@@ -4,8 +4,6 @@ import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 
@@ -20,7 +18,7 @@ import javax.jms.Queue;
 import javax.jms.TextMessage;
 
 @Component
-public class MessageReceiver {
+public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
     private final QueueConnectionFactory factory;
@@ -34,7 +32,7 @@ public class MessageReceiver {
     @Value("${ibm.mq.queue}")
     private String mqQueue;
 
-    public MessageReceiver(QueueConnectionFactory factory, MessageStorageService messageStorageService) {
+    public MessageConsumer(QueueConnectionFactory factory, MessageStorageService messageStorageService) {
         this.factory = factory;
         this.messageStorageService = messageStorageService;
 
