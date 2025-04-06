@@ -16,9 +16,12 @@ public class MessageEntity {
     private String content;
     private LocalDateTime receivedAt;
 
-    public MessageEntity( String content, String messageId, LocalDateTime receivedAt) {
+    private boolean received;
+
+    public MessageEntity( String content, String messageId, LocalDateTime receivedAt, boolean received) {
         this.content = content;
         this.receivedAt = receivedAt;
+        this.received = received;
     }
 
 
@@ -36,5 +39,9 @@ public class MessageEntity {
 
     public String getMessageId() {
         return messageId;
+    }
+
+    public boolean isReceived() {
+        return received;
     }
 }

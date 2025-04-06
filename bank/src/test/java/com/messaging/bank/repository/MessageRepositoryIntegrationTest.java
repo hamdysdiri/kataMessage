@@ -18,7 +18,7 @@ public class MessageRepositoryIntegrationTest {
 
     @Test
     void shouldStoreMessageInDatabaseAfterSend() {
-        MessageEntity content = new MessageEntity("hello", "messageId", LocalDateTime.now());
+        MessageEntity content = new MessageEntity("hello", "messageId", LocalDateTime.now(), false);
         messageRepository.save(content);
         List<MessageEntity> messages = messageRepository.findAll();
         assertThat(messages).isNotEmpty();

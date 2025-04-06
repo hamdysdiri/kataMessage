@@ -29,6 +29,10 @@ public class MessageSender {
         this.messageStorageService = messageStorageService;
     }
 
+    /**
+     *
+     * @param messageText to be send it throught the mq ibm middleware
+     */
     public void sendMessage(String messageText) {
 
         QueueConnection connection = null;
@@ -63,9 +67,14 @@ public class MessageSender {
         }
     }
 
+    /**
+     *
+     * @param message the sended message, the parameter on the constructor is set to false
+     * @throws JMSException
+     */
     private void saveMessageOnDB(TextMessage message) throws JMSException {
         TextMessage textMessage = message;
         String content = textMessage.getText();
-        messageStorageService.saveMessage(content,textMessage.getJMSMessageID());
+        messageStorageService.saveMessage(content,textMessage.getJMSMessageID(), false);
     }
 }

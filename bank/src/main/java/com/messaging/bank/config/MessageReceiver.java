@@ -64,7 +64,7 @@ public class MessageReceiver {
                 logger.info("Message ID: {} ", messageId);
                 logger.info("Message timestamp: {} ", timestamp);
 
-                messageStorageService.saveMessage(textMessage.getText(), textMessage.getJMSMessageID());
+                messageStorageService.saveMessage(textMessage.getText(), textMessage.getJMSMessageID(), true);
 
                 return textMessage.getText();
             } else {

@@ -3,19 +3,21 @@ package com.messaging.bank.service;
 import com.messaging.bank.config.MessageReceiver;
 import com.messaging.bank.config.MessageSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-public class MessageService {
+@Transactional
+public class MessageMQService {
     private final MessageSender messageSender;
     private final MessageReceiver messageReceiver;
 
-    public MessageService(MessageSender messageSender, MessageReceiver messageReceiver) {
+    public MessageMQService(MessageSender messageSender, MessageReceiver messageReceiver) {
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
     }
 
-    public void sendAndSaveMessage(String messageText) {
+    public void sendAndSaveMessage(final String messageText) {
         messageSender.sendMessage(messageText);
     }
 
