@@ -54,7 +54,7 @@ public class MessageConsumer {
             receiver = session.createReceiver(queue);
             connection.start();
 
-            Message message = receiver.receive(1000); // 1 second timeout, adjust to your needs
+            Message message = receiver.receive(1000);
 
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;

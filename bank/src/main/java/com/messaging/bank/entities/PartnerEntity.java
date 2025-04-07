@@ -70,4 +70,32 @@ public class PartnerEntity {
     public String getDescription() {
         return description;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
+    public void setProcessedFlowType(ProcessedFlowType processedFlowType) {
+        this.processedFlowType = processedFlowType;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

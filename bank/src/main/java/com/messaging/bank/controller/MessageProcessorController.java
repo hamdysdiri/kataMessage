@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * this version 2 of controller is an advanced use of mq IBM. serve multiple push/pull messages.
@@ -43,12 +44,13 @@ public class MessageProcessorController {
     }
 
     @GetMapping(RestConstants.GET_ALL)
-    public ResponseEntity<String> receiveAllMessageFromDB() {
+    public ResponseEntity<?> receiveAllMessageFromDB() {
         List<MessageEntity> msg = messageStorageService.getAllMessagesStorage();
-        if (msg.size() != 0) {
-            return ResponseEntity.ok("Received message : " + msg);
+        if (msg.isEmpty()) {
+            Map<String, String> response = Map.of("message", "No message available.");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.ok("No message available.");
+            return ResponseEntity.ok(msg);
         }
     }
 }

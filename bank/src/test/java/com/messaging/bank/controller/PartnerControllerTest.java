@@ -13,8 +13,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -30,19 +30,19 @@ class PartnerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private PartnerService partnerService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("GET /api/v1/partners"+RestConstants.CREATE+ "should return list of partners")
+    @DisplayName("GET /api/v2/partners"+RestConstants.CREATE+ "should return list of partners")
     void testGetAllPartners() throws Exception {
         PartnerDTO dto = new PartnerDTO(1L, "TestAlias", "TYPE", Direction.INBOUND, "App", ProcessedFlowType.MESSAGE, "desc");
         Mockito.when(partnerService.getAllPartners()).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/v1/partners/"+ RestConstants.GET_ALL))
+        mockMvc.perform(get("/api/v2/partners/"+ RestConstants.GET_ALL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].alias").value("TestAlias"));
     }
@@ -55,7 +55,7 @@ class PartnerControllerTest {
 
         Mockito.when(partnerService.createPartner(any())).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/partners/"+RestConstants.CREATE)
+        mockMvc.perform(post("/api/v2/partners/"+RestConstants.CREATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -63,22 +63,22 @@ class PartnerControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/partners/{id} should return partner by ID")
+    @DisplayName("GET /api/v2/partners/{id} should return partner by ID")
     void testGetPartnerById() throws Exception {
         PartnerDTO dto = new PartnerDTO(1L, "TestAlias", "TYPE", Direction.INBOUND, "App", ProcessedFlowType.NOTIFICATION, "desc");
         Mockito.when(partnerService.getPartner(1L)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/v1/partners/1"))
+        mockMvc.perform(get("/api/v2/partners/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.alias").value("TestAlias"));
     }
 
     @Test
-    @DisplayName("DELETE /api/v1/partners/{id} should delete partner")
+    @DisplayName("DELETE /api/v2/partners/{id} should delete partner")
     void testDeletePartner() throws Exception {
         Mockito.doNothing().when(partnerService).deletePartner(1L);
 
-        mockMvc.perform(delete("/api/v1/partners/delete/1"))
+        mockMvc.perform(delete("/api/v2/partners/delete/1"))
                 .andExpect(status().isNoContent());
     }
 }

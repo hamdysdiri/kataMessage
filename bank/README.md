@@ -1,62 +1,102 @@
-# kataMessage, Monolith app, MQ-IBM
+IBM MQ Integration with Monolith App – KataMessage
+To avoid the manual complexity of setting up IBM MQ, we leverage Docker to spin up the MQ broker easily. Below are two ways to run IBM MQ.
 
+🚀 Option 1: Docker Compose
+Run the docker-compose.yml file located in the project root. (the file is already configured)
 
-To avoid the complexities of manual installation and configuration,
-we can run IBM MQ inside a Docker container.
-
-Option 1:
-run docker compose file on the project structure
-
-Option 2:
-you can do it manually.
-You can use the following command to run the container with a basic configuration
-(dev mode will have access to dev channel):
-
-1- docker run --name my-mq --env LICENSE=accept --env MQ_QMGR_NAME=QM1 \
+⚙️ Option 2: Manual Docker Setup for exploring the journey
+🔹 Option A: Using the legacy Docker Hub image
+bash
+Copier
+Modifier
+docker run --name my-mq \
+--env LICENSE=accept \
+--env MQ_QMGR_NAME=QM1 \
 --publish 1414:1414 \
 --publish 9443:9443 \
 --detach \
 ibmcom/mq
 
-2- docker exec -it my-mq bash.
+docker exec -it my-mq bash
+Inside the container:
 
-3- runmqsc QM1
+bash
+Copier
+Modifier
+runmqsc QM1
+DEFINE QLOCAL(QUEUE1)
+SET AUTHREC OBJTYPE(QUEUE) PROFILE('QUEUE1') PRINCIPAL('app') AUTHADD(ALL)
+END
+exit
+⚠️ Note: ibmcom/mq is an older image. For newer environments, prefer the IBM Container Registry version.
 
-4- DEFINE QLOCAL(QUEUE1)
+🔹 Option B: Using the latest IBM MQ image
+bash
+Copier
+Modifier
+docker run -d \
+--name my-mq \
+--privileged \
+-e LICENSE=accept \
+-e MQ_DEV=TRUE \
+-e MQ_QMGR_NAME=QM1 \
+-p 1414:1414 \
+-p 9443:9443 \
+icr.io/ibm-messaging/mq:latest
 
-5- SET AUTHREC OBJTYPE(QUEUE) PROFILE('QUEUE1') PRINCIPAL('app') AUTHADD(ALL)
+docker exec -it my-mq bash
+Inside the container:
 
-6- END 
+bash
+Copier
+Modifier
+runmqsc QM1
+display channel(*)
 
-7- exit
+# If dev channel not visible, manually create a channel and set appropriate permissions.
+✅ Testing
+Start the application:
+Clone and run the project locally.
 
-Be careful, this is an old docker image from docker-hub. If you want a new 
-image, should run:
+Use curl to test message operations:
+bash
+Copier
+Modifier
+# Push a message (V2 - JMSListener)
+curl -X POST -H "Content-Type: text/plain" \
+-d "Hello MQ3" \
+http://localhost:8080/api/v2/messages/create
 
-1- docker run -d  --name my-mq  --privileged  -e LICENSE=accept -e MQ_DEV=TRUE -e MQ_QMGR_NAME=QM1 
--p 1414:1414  -p 9443:9443  icr.io/ibm-messaging/mq:latest
+# Retrieve the last message
+curl http://localhost:8080/api/v2/messages/last-received
+🛠 Development Notes
+Initially implemented manual push/pull logic (v1)
 
-2- docker exec -it my-mq bash
+Later refactored the code using JMSListener for better integration (v2)
 
-3 runmqsc QM1
 
-4- display channel(*) -> to verify if the dev mode is active, if not, you need
-to create a channel and grant privilege.
+# Run the front app
+ng serve so you can use the front (another alternative for curls)
 
-To Test, please run:
-1- clone and run the project locally
-![img.png](img.png)
+example of data send to the queue and get back from the db.
 
-1- curl -X POST -H "Content-Type: text/plain" -d "Hello MQ3" http://localhost:8080/api/v2/messages/create
+![img_1.png](img_1.png)
 
-2- curl http://localhost:8080/api/v2/messages/last-received
 
-To realize this kata, I got throught this resources:
+partner screen
 
-1- https://github.com/ibm-messaging/mq-jms-spring
+![img_2.png](img_2.png)
 
-2- https://www.baeldung.com/java-message-service-ibm-mq-read-write
+📚 Resources Used
+IBM MQ Spring JMS sample
+🔗 https://github.com/ibm-messaging/mq-jms-spring
 
-3- https://github.com/ibm-messaging/mq-dev-patterns/blob/master/Spring-JMS/src/main/java/com/ibm/mq/samples/jms/spring/level102/MessageConsumer102.java
+Baeldung IBM MQ integration
+🔗 https://www.baeldung.com/java-message-service-ibm-mq-read-write
 
-4-https://www.baeldung.com/spring-retry
+IBM MQ dev patterns (JMS consumer example)
+🔗 https://github.com/ibm-messaging/mq-dev-patterns/blob/master/Spring-JMS/src/main/java/com/ibm/mq/samples/jms/spring/level102/MessageConsumer102.java
+
+Spring Retry guide
+🔗 https://www.baeldung.com/spring-retry
+

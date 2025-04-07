@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -29,10 +29,10 @@ class MessageProcessorControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MessageMQService messageService;
 
-    @MockBean
+    @MockitoBean
     private MessageStorageService messageStorageService;
 
     @Test
@@ -67,7 +67,7 @@ class MessageProcessorControllerTest {
 
         mockMvc.perform(get("/api/v2/messages/"+RestConstants.GET_ALL))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Received message")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("content\":\"Stored message")));
     }
 
     @Test
@@ -76,6 +76,6 @@ class MessageProcessorControllerTest {
         when(messageStorageService.getAllMessagesStorage()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/api/v2/messages/"+ RestConstants.GET_ALL))
                 .andExpect(status().isOk())
-                .andExpect(content().string("No message available."));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("No message available")));
     }
 }

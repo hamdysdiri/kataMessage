@@ -21,8 +21,9 @@ public class PartnerService {
     private final PartnerRepository partnerRepository;
     private EntityMapper mapper;
 
-    public PartnerService(PartnerRepository partnerRepository) {
+    public PartnerService(PartnerRepository partnerRepository, EntityMapper mapper) {
         this.partnerRepository = partnerRepository;
+        this.mapper = mapper;
 
     }
 
