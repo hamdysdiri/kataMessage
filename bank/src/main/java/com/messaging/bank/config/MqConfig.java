@@ -35,6 +35,11 @@ public class MqConfig {
     @Value("${ibm.mq.password}")
     private String password;
 
+    /**
+     *
+     * @return factory configured from the application properties (used for V1)
+     * @throws JMSException
+     */
     @Bean
     public MQQueueConnectionFactory connectionFactory () throws JMSException {
         MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
@@ -47,6 +52,11 @@ public class MqConfig {
         return factory;
     }
 
+    /**
+     * JMS template used for sending purposes
+     * @param connectionFactory
+     * @return
+     */
     @Bean
     public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
         JmsTemplate template = new JmsTemplate(connectionFactory);
@@ -54,6 +64,11 @@ public class MqConfig {
         return template;
     }
 
+    /**
+     * configure the listner pooling
+     * @param connectionFactory
+     * @return
+     */
 
     @Bean
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
@@ -63,6 +78,10 @@ public class MqConfig {
         return factory;
     }
 
+    /**
+     * configure the executor service to run thread
+     * @return
+     */
     @Bean
     public ExecutorService taskExecutor() {
         return Executors.newFixedThreadPool(10);

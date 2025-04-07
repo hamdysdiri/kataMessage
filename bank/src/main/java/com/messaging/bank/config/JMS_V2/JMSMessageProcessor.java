@@ -42,6 +42,10 @@ public class JMSMessageProcessor {
 
     }
 
+    @Retryable(
+            maxAttemptsExpression = "${retry.maxAttempts}",
+            backoff = @Backoff(delayExpression = "${retry.maxDelay}")
+    )
     public void asyncSend(String messageText) {
         executorService.submit(() -> {
             try {
