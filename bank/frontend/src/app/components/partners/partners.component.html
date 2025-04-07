@@ -1,0 +1,42 @@
+<h2>Liste des partenaires</h2>
+<form (ngSubmit)="addPartner()" #form="ngForm" style="margin-bottom: 1rem;">
+    <input type="text" name="alias" [(ngModel)]="newPartner.alias" placeholder="Alias" required>
+    <input type="text" name="type" [(ngModel)]="newPartner.type" placeholder="Type" required>
+    <select name="direction" [(ngModel)]="newPartner.direction" required>
+        <option value="INBOUND">INBOUND</option>
+        <option value="OUTBOUND">OUTBOUND</option>
+    </select>
+    <input type="text" name="application" [(ngModel)]="newPartner.application" placeholder="Application">
+    <select name="processedFlowType" [(ngModel)]="newPartner.processedFlowType" required>
+        <option value="MESSAGE">MESSAGE</option>
+        <option value="ALERTING">ALERTING</option>
+        <option value="NOTIFICATION">NOTIFICATION</option>
+    </select>
+    <input type="text" name="description" [(ngModel)]="newPartner.description" placeholder="Description" required>
+    <button type="submit">Envoyer</button>
+</form>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Alias</th>
+            <th>Type</th>
+            <th>Direction</th>
+            <th>Application</th>
+            <th>Type Flux</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let p of partners">
+            <td>{{ p.alias }}</td>
+            <td>{{ p.type }}</td>
+            <td>{{ p.direction }}</td>
+            <td>{{ p.application }}</td>
+            <td>{{ p.processedFlowType }}</td>
+            <td>{{ p.description }}</td>
+            <td><button (click)="deletePartner(p.id)">Supprimer</button></td>
+        </tr>
+    </tbody>
+</table>

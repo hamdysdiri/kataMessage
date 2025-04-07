@@ -1,0 +1,36 @@
+<h2>Liste des messages</h2>
+<form (ngSubmit)="sendMessage()" style="margin-bottom: 20px;">
+    <input type="text" [(ngModel)]="newMessage" name="message" placeholder="Contenu du message" required>
+    <button type="submit">Envoyer</button>
+  </form>
+  <div *ngIf="noMessage" class="alert">Aucun message disponible</div>
+
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Contenu</th>
+        <th>Date</th>
+        <th>Direction</th>
+        <th>Détails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let msg of messages">
+        <td>{{ msg.messageId }}</td>
+        <td>{{ msg.content }}</td>
+        <td>{{ msg.receivedAt | date:'short' }}</td>
+        <td>{{ msg.direction }}</td>
+        <td><button (click)="showDetails(msg)">Voir</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="selectedMessage" style="border: 1px solid gray; padding: 10px; margin-top: 20px;">
+    <h3>Détail du message</h3>
+    <p><strong>ID:</strong> {{ selectedMessage.messageId }}</p>
+    <p><strong>Contenu:</strong> {{ selectedMessage.content }}</p>
+    <p><strong>Date:</strong> {{ selectedMessage.receivedAt | date:'full' }}</p>
+    <p><strong>Direction:</strong> {{ selectedMessage.direction }}</p>
+    <button (click)="selectedMessage = null">Fermer</button>
+  </div>
