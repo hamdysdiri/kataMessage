@@ -1,5 +1,6 @@
-package com.messaging.bank.config;
+package com.messaging.bank.config.JMS_V1;
 
+import com.messaging.bank.entities.enums.Direction;
 import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,6 @@ public class MessageSender {
     private void saveMessageOnDB(TextMessage message) throws JMSException {
         TextMessage textMessage = message;
         String content = textMessage.getText();
-        messageStorageService.saveMessage(content,textMessage.getJMSMessageID(), false);
+        messageStorageService.saveMessage(content,textMessage.getJMSMessageID(), Direction.INBOUND);
     }
 }

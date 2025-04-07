@@ -1,7 +1,7 @@
 package com.messaging.bank.service;
 
-import com.messaging.bank.config.JMS.JMSMessageSender;
-import com.messaging.bank.config.MessageConsumer;
+import com.messaging.bank.config.JMS_V2.JMSMessageProcessor;
+import com.messaging.bank.config.JMS_V1.MessageConsumer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,10 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MessageMQService {
-    private final JMSMessageSender messageSender;
+    private final JMSMessageProcessor messageSender;
     private final MessageConsumer messageReceiver;
 
-    public MessageMQService(JMSMessageSender messageSender, MessageConsumer messageReceiver) {
+
+    public MessageMQService(JMSMessageProcessor messageSender, MessageConsumer messageReceiver, MessageStorageService messageStorageService) {
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
     }
@@ -22,7 +23,6 @@ public class MessageMQService {
     }
 
     public String receiveAndSaveMessage()  {
-        return messageReceiver.receiveMessage();
+        return messageReceiver.receiveMessageManuallyFromTheQueue();
     }
-
 }

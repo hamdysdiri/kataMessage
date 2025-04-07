@@ -1,6 +1,7 @@
 package com.messaging.bank.service;
 
 import com.messaging.bank.entities.MessageEntity;
+import com.messaging.bank.entities.enums.Direction;
 import com.messaging.bank.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +23,11 @@ public class MessageStorageService {
      *
      * @param content 's message
      * @param messageId the jms id
-     * @param received received true, sended false
+     * @param direction
      */
-    public void saveMessage(final String content, final String messageId , final boolean received) {
+    public void saveMessage(final String content, final String messageId , final Direction direction) {
         MessageEntity entity = new MessageEntity(content, messageId,
-                LocalDateTime.now(), received);
+                LocalDateTime.now(), direction);
         repository.save(entity);
     }
 
@@ -38,4 +39,9 @@ public class MessageStorageService {
     public List<MessageEntity> getAllMessagesStorage(){
        return repository.findAll();
     }
+
+    public MessageEntity getLastInboundMessage() {
+        return repository.findFirstByDirectionOrderByReceivedAtDesc(Direction.INBOUND);
+    }
+
 }

@@ -12,11 +12,13 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListenerConfigurer;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
+@EnableRetry
 @EnableJms
 public class MqConfig {
 
@@ -48,6 +50,7 @@ public class MqConfig {
     @Bean
     public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
         JmsTemplate template = new JmsTemplate(connectionFactory);
+        template.setReceiveTimeout(2000);
         return template;
     }
 

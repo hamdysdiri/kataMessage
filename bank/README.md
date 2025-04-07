@@ -44,16 +44,19 @@ image, should run:
 to create a channel and grant privilege.
 
 To Test, please run:
+1- clone and run the project locally
+![img.png](img.png)
 
-1- curl -X POST -H "Content-Type: text/plain" -d "Hello MQ" http://localhost:8080/api/messages/send
+1- curl -X POST -H "Content-Type: text/plain" -d "Hello MQ3" http://localhost:8080/api/v2/messages/create
 
-2- check the docker log image : docker logs [docker image] -f
-
-3- curl http://localhost:8080/api/messages/receive
+2- curl http://localhost:8080/api/v2/messages/last-received
 
 To realize this kata, I got throught this resources:
+
 1- https://github.com/ibm-messaging/mq-jms-spring
 
 2- https://www.baeldung.com/java-message-service-ibm-mq-read-write
 
 3- https://github.com/ibm-messaging/mq-dev-patterns/blob/master/Spring-JMS/src/main/java/com/ibm/mq/samples/jms/spring/level102/MessageConsumer102.java
+
+4-https://www.baeldung.com/spring-retry

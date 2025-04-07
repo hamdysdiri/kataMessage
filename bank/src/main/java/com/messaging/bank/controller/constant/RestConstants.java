@@ -10,6 +10,9 @@ public class RestConstants {
 
     public static final String  RECEIVE = "/receive";
 
+    public static final String  LAST_RECEIVE = "/last-received";
+
+
     private RestConstants() {
     }
 }

@@ -10,17 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * this version 1 of controller serve as a POC to try how to push and pull manually the message to mq queue.
- * Why I am keeping  ? to show the improve that I have. this method is not recommended for large volume of data.
+ * this version 2 of controller is an advanced use of mq IBM. serve multiple push/pull messages.
+ *
  */
+
 @RestController
-@RequestMapping("/api/v1/messages")
-public class MessageController{
+@RequestMapping("/api/v2/messages")
+public class MessageProcessorController {
 
     private final MessageMQService messageService;
     private final MessageStorageService messageStorageService;
 
-    public MessageController(MessageMQService messageService, MessageStorageService messageStorageService) {
+    public MessageProcessorController(MessageMQService messageService, MessageStorageService messageStorageService) {
         this.messageService = messageService;
         this.messageStorageService = messageStorageService;
     }
@@ -31,9 +32,9 @@ public class MessageController{
         return ResponseEntity.ok("Message sent successfully");
     }
 
-    @GetMapping(RestConstants.RECEIVE)
+    @GetMapping(RestConstants.LAST_RECEIVE)
     public ResponseEntity<String> receiveLatestMessageFromMiddelware()  {
-        String msg = messageService.receiveAndSaveMessage();
+        MessageEntity msg = messageStorageService.getLastInboundMessage();
         if (msg != null) {
             return ResponseEntity.ok("Received message : " + msg);
         } else {

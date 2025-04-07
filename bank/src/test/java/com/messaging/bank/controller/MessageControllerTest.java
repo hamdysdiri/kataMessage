@@ -1,13 +1,16 @@
 package com.messaging.bank.controller;
 
+import com.messaging.bank.controller.constant.RestConstants;
 import com.messaging.bank.entities.MessageEntity;
+import com.messaging.bank.entities.enums.Direction;
 import com.messaging.bank.service.MessageMQService;
 import com.messaging.bank.service.MessageStorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,7 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(MessageController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class MessageControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -28,11 +32,10 @@ public class MessageControllerTest {
 
     @MockBean
     private MessageStorageService messageStorageService;
-
     @Test
     @DisplayName("shouldSendMessageSuccessfully successfully to middleware ")
     void shouldSendMessageSuccessfully() throws Exception {
-        mockMvc.perform(post("/api/messages/create")
+        mockMvc.perform(post("/api/v1/messages/"+ RestConstants.CREATE)
                         .content("Hello Test")
                         .contentType("text/plain"))
                 .andExpect(status().isOk())
@@ -44,7 +47,7 @@ public class MessageControllerTest {
     void shouldReturnReceivedMessage() throws Exception {
         Mockito.when(messageService.receiveAndSaveMessage()).thenReturn("Hello Test");
 
-        mockMvc.perform(get("/api/messages/receive"))
+        mockMvc.perform(get("/api/v1/messages/"+RestConstants.RECEIVE))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Received message : Hello Test"));
     }
@@ -52,11 +55,11 @@ public class MessageControllerTest {
     @Test
     @DisplayName("shouldReturn all ReceivedMessage successfully from the db")
     void shouldReturnAllReceivedMessageFromDB() throws Exception {
-        MessageEntity entity = new MessageEntity("JMS123","Hello MQIBM", LocalDateTime.now(), true);
+        MessageEntity entity = new MessageEntity("JMS123","Hello MQIBM", LocalDateTime.now(), Direction.INBOUND);
         Mockito.when(messageStorageService.getAllMessagesStorage())
                 .thenReturn(List.of(entity));
 
-        mockMvc.perform(get("/api/messages/getAll"))
+        mockMvc.perform(get("/api/v1/messages/getAll"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Received message")));
     }

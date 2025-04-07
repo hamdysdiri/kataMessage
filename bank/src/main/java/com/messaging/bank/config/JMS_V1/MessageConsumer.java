@@ -1,5 +1,6 @@
-package com.messaging.bank.config;
+package com.messaging.bank.config.JMS_V1;
 
+import com.messaging.bank.entities.enums.Direction;
 import com.messaging.bank.service.MessageStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class MessageConsumer {
 
     }
 
-    public String receiveMessage() {
+    public String receiveMessageManuallyFromTheQueue() {
 
         QueueConnection connection = null;
         QueueSession session = null;
@@ -49,7 +50,6 @@ public class MessageConsumer {
             connection = factory.createQueueConnection(username, password);
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // Suppose your queue is "QUEUE1"
             Queue queue = session.createQueue(mqQueue);
             receiver = session.createReceiver(queue);
             connection.start();
@@ -64,7 +64,7 @@ public class MessageConsumer {
                 logger.info("Message ID: {} ", messageId);
                 logger.info("Message timestamp: {} ", timestamp);
 
-                messageStorageService.saveMessage(textMessage.getText(), textMessage.getJMSMessageID(), true);
+                messageStorageService.saveMessage(textMessage.getText(), textMessage.getJMSMessageID(), Direction.OUTBOUND);
 
                 return textMessage.getText();
             } else {
@@ -72,7 +72,6 @@ public class MessageConsumer {
                 return null;
             }
         } catch (JMSException e) {
-            // handle exception
             e.printStackTrace();
             return null;
         } finally {
@@ -81,7 +80,6 @@ public class MessageConsumer {
                 if (session != null) session.close();
                 if (connection != null) connection.close();
             } catch (JMSException e) {
-                // handle exception
                 e.printStackTrace();
             }
         }

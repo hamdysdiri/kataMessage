@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/partners")
+@RequestMapping("/api/v1/partners")
 public class PartnerController{
 
     private final PartnerService partnerService;

@@ -1,5 +1,6 @@
 package com.messaging.bank.entities;
 
+import com.messaging.bank.entities.enums.Direction;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,14 +17,18 @@ public class MessageEntity {
     private String content;
     private LocalDateTime receivedAt;
 
-    private boolean received;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "direction", nullable = false)
+    private Direction direction;
 
-    public MessageEntity( String content, String messageId, LocalDateTime receivedAt, boolean received) {
+    public MessageEntity( String content, String messageId, LocalDateTime receivedAt, Direction direction) {
         this.content = content;
         this.receivedAt = receivedAt;
-        this.received = received;
+        this.direction = direction;
     }
 
+    public MessageEntity() {
+    }
 
     public Long getId() {
         return id;
@@ -41,7 +46,7 @@ public class MessageEntity {
         return messageId;
     }
 
-    public boolean isReceived() {
-        return received;
+    public Direction getDirection() {
+        return direction;
     }
 }

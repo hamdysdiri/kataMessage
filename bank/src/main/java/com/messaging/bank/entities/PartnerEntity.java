@@ -40,6 +40,9 @@ public class PartnerEntity {
         this.description = description;
     }
 
+    public PartnerEntity() {
+    }
+
     public Long getId() {
         return id;
     }
